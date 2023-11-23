@@ -1,6 +1,6 @@
 // Copyright (c) Jupyter Development Team.
 // Distributed under the terms of the Modified BSD License.
-import js 
+
 import type Pyodide from 'pyodide';
 
 import type { DriveFS } from '@jupyterlite/contents';
@@ -436,13 +436,12 @@ export class PyodideRemoteKernel {
 
   async input(prompt: string) {
     prompt = typeof prompt === 'undefined' ? '' : prompt;
-    // await this.sendInputRequest(prompt, false);
-    // const replyPromise = new Promise((resolve) => {
-    //   this._resolveInputReply = resolve;
-    // });
-    // const result: any = await replyPromise;
-    const userValue = js.prompt(prompt);
-    return userValue;
+    await this.sendInputRequest(prompt, false);
+    const replyPromise = new Promise((resolve) => {
+      this._resolveInputReply = resolve;
+    });
+    const result: any = await replyPromise;
+    return result['value'];
   }
 
   /**
