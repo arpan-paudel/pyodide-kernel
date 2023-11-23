@@ -1,6 +1,6 @@
 // Copyright (c) Jupyter Development Team.
 // Distributed under the terms of the Modified BSD License.
-
+import js 
 import type Pyodide from 'pyodide';
 
 import type { DriveFS } from '@jupyterlite/contents';
@@ -441,7 +441,7 @@ export class PyodideRemoteKernel {
     //   this._resolveInputReply = resolve;
     // });
     // const result: any = await replyPromise;
-    const userValue = window.prompt(prompt);
+    const userValue = js.prompt(prompt);
     return userValue;
   }
 
