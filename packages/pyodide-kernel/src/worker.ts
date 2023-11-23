@@ -436,12 +436,13 @@ export class PyodideRemoteKernel {
 
   async input(prompt: string) {
     prompt = typeof prompt === 'undefined' ? '' : prompt;
-    await this.sendInputRequest(prompt, false);
-    const replyPromise = new Promise((resolve) => {
-      this._resolveInputReply = resolve;
-    });
-    const result: any = await replyPromise;
-    return result['value'];
+    // await this.sendInputRequest(prompt, false);
+    // const replyPromise = new Promise((resolve) => {
+    //   this._resolveInputReply = resolve;
+    // });
+    // const result: any = await replyPromise;
+    const userValue = window.prompt(prompt);
+    return userValue;
   }
 
   /**
