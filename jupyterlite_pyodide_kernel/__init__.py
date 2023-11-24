@@ -4,7 +4,7 @@ import js
 
 from ._version import __version__
 
-__all__ = ["__version__", "_jupyter_labextension_paths", "patch_input"]
+__all__ = ["__version__", "_jupyter_labextension_paths"]
 
 
 def _jupyter_labextension_paths():
@@ -32,11 +32,3 @@ def patch_input():
 
     # replacing
     builtins.input = _patched_input
-
-    # define async input
-    async def input_async(*args, **kwargs):
-        local_input = kernel.locals().get("input", builtins.input)
-        if local_input != _patched_input:
-            return local_input(*args, **kwargs)
-        return await kernel.input_async(*args, **kwargs)
-    builtins._basthon_input_async = input_async
