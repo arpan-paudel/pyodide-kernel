@@ -66,7 +66,7 @@ export class PyodideRemoteKernel {
 
     // get piplite early enough to impact pyodide dependencies
     const myModule = {
-      input_fixed: (prompt) => window.prompt(prompt),
+      input_fixed: (prompt:string) => window.prompt(prompt),
     };
   
     this._pyodide.registerJsModule("myModule", myModule);
