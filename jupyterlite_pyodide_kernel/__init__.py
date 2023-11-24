@@ -1,6 +1,4 @@
 """A JupyterLite kernel powered by Pyodide."""
-import builtins
-import js 
 from . import kernel as __kernel__
 from . import _patch_builtins
 from ._version import __version__

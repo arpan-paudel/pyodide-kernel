@@ -441,6 +441,7 @@ export class PyodideRemoteKernel {
       this._resolveInputReply = resolve;
     });
     const result: any = await replyPromise;
+    console.log('input result', result);
     return result['value'];
   }
 

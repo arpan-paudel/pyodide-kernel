@@ -29,22 +29,6 @@ def patch_input():
     # replacing
     builtins.input = _patched_input
 
-
-def patch_sleep():
-    """
-    Patching time.sleep function for toplevel async calls.
-
-    It is not a builtin function but the patch put stuff in builtins.
-    """
-    async def sleep_async(*args, **kwargs):
-        import time
-        local_sleep = kernel.locals().get("sleep", time.sleep)
-        if local_sleep != time.sleep:
-            return local_sleep(*args, **kwargs)
-        return await kernel.sleep_async(*args, **kwargs)
-    builtins._basthon_sleep_async = sleep_async
-
-
 def patch_help():
     """ Patching help function.
 
