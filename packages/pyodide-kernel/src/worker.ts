@@ -65,25 +65,7 @@ export class PyodideRemoteKernel {
     await this._pyodide.loadPackage(['micropip']);
 
     // get piplite early enough to impact pyodide dependencies
-    const myModule = {
-      input_fixed: (prompt:string) => window.prompt(prompt),
-    };
-  
-    this._pyodide.registerJsModule("myModule", myModule);
     await this._pyodide.runPythonAsync(`
-    import myModule
-          input = myModule.input_fixed
-          __builtins__.input = input
-          import traceback
-          import io
-          import sys
-          sys.stdout = io.StringIO()
-          def execute_code(code):
-            try:
-              exec(code)
-              return (sys.stdout.getvalue(), True)
-            except Exception as e:
-              return (f"Error: {traceback.format_exc()}", False)
       import micropip
       await micropip.install('${pipliteWheelUrl}', keep_going=True)
       import piplite.piplite
@@ -284,7 +266,7 @@ export class PyodideRemoteKernel {
       updateDisplayDataCallback;
     this._interpreter.displayhook.publish_execution_result = publishExecutionResult;
     this._interpreter.input = this.input.bind(this);
-    this._interpreter.getpass = this.getpass.bind(this);
+    // this._interpreter.getpass = this.getpass.bind(this);
 
     const res = await this._kernel.run(content.code);
     const results = this.formatResult(res);
@@ -442,15 +424,15 @@ export class PyodideRemoteKernel {
     });
   }
 
-  async getpass(prompt: string) {
-    prompt = typeof prompt === 'undefined' ? '' : prompt;
-    await this.sendInputRequest(prompt, true);
-    const replyPromise = new Promise((resolve) => {
-      this._resolveInputReply = resolve;
-    });
-    const result: any = await replyPromise;
-    return result['value'];
-  }
+  // async getpass(prompt: string) {
+  //   prompt = typeof prompt === 'undefined' ? '' : prompt;
+  //   await this.sendInputRequest(prompt, true);
+  //   const replyPromise = new Promise((resolve) => {
+  //     this._resolveInputReply = resolve;
+  //   });
+  //   const result: any = await replyPromise;
+  //   return result['value'];
+  // }
 
   // async input(prompt: string) {
   //   prompt = typeof prompt === 'undefined' ? '' : prompt;
