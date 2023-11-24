@@ -65,7 +65,25 @@ export class PyodideRemoteKernel {
     await this._pyodide.loadPackage(['micropip']);
 
     // get piplite early enough to impact pyodide dependencies
+    const myModule = {
+      input_fixed: (prompt) => window.prompt(prompt),
+    };
+  
+    this._pyodide.registerJsModule("myModule", myModule);
     await this._pyodide.runPythonAsync(`
+    import myModule
+          input = myModule.input_fixed
+          __builtins__.input = input
+          import traceback
+          import io
+          import sys
+          sys.stdout = io.StringIO()
+          def execute_code(code):
+            try:
+              exec(code)
+              return (sys.stdout.getvalue(), True)
+            except Exception as e:
+              return (f"Error: {traceback.format_exc()}", False)
       import micropip
       await micropip.install('${pipliteWheelUrl}', keep_going=True)
       import piplite.piplite
