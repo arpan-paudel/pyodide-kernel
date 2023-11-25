@@ -266,7 +266,7 @@ export class PyodideRemoteKernel {
       updateDisplayDataCallback;
     this._interpreter.displayhook.publish_execution_result = publishExecutionResult;
     this._interpreter.input = this.input.bind(this);
-    // this._interpreter.getpass = this.getpass.bind(this);
+    this._interpreter.getpass = this.getpass.bind(this);
 
     const res = await this._kernel.run(content.code);
     const results = this.formatResult(res);
@@ -424,36 +424,28 @@ export class PyodideRemoteKernel {
     });
   }
 
-  // async getpass(prompt: string) {
-  //   prompt = typeof prompt === 'undefined' ? '' : prompt;
-  //   await this.sendInputRequest(prompt, true);
-  //   const replyPromise = new Promise((resolve) => {
-  //     this._resolveInputReply = resolve;
-  //   });
-  //   const result: any = await replyPromise;
-  //   return result['value'];
-  // }
-
-  // async input(prompt: string) {
-  //   prompt = typeof prompt === 'undefined' ? '' : prompt;
-  //   // await this.sendInputRequest(prompt, false);
-  //   const replyPromise = new Promise((resolve) => {
-  //     // this._resolveInputReply = resolve;
-  //     const input = window.prompt(prompt);
-  //     resolve(input);
-  //   });
-  //   const result: any = await replyPromise;
-  //   console.log('input result', result);
-  //   return result['value'];
-  // }
-  async input(promptText = '') {
-    // Use window.prompt to get the user input
-    const userInput = window.prompt(promptText);
-  
-    // Return the input received from the user
-    return userInput;
+  async getpass(prompt: string) {
+    prompt = typeof prompt === 'undefined' ? '' : prompt;
+    await this.sendInputRequest(prompt, true);
+    const replyPromise = new Promise((resolve) => {
+      this._resolveInputReply = resolve;
+    });
+    const result: any = await replyPromise;
+    return result['value'];
   }
-  
+
+  async input(prompt: string) {
+    prompt = typeof prompt === 'undefined' ? '' : prompt;
+    // await this.sendInputRequest(prompt, false);
+    const replyPromise = new Promise((resolve) => {
+      // this._resolveInputReply = resolve;
+      const input = window.prompt(prompt);
+      resolve(input);
+    });
+    const result: any = await replyPromise;
+    console.log('input result', result);
+    return result['value'];
+  }
 
   /**
    * Send a comm message to the front-end.
