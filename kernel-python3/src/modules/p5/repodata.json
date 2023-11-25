@@ -1,0 +1,11 @@
+{
+  "p5": {
+    "name": "p5",
+    "version": "0.0.1",
+    "file_name": "",
+    "install_dir": "site",
+    "sha256": "",
+    "imports": ["p5"],
+    "depends": ["setuptools"]
+  }
+}

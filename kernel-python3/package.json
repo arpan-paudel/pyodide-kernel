@@ -1,0 +1,52 @@
+{
+  "name": "@basthon/kernel-python3",
+  "version": "0.0.0",
+  "description": "Basthon - Python 3 Kernel",
+  "homepage": "https://basthon.fr",
+  "bugs": {
+    "url": "https://framagit.org/basthon/basthon-kernel/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://framagit.org/basthon/basthon-kernel.git"
+  },
+  "license": "GPL-3.0-or-later",
+  "author": "Romain Casati",
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
+  "directories": {
+    "lib": "lib/"
+  },
+  "files": [
+    "lib"
+  ],
+  "scripts": {
+    "build": "run-s build:package build:archive build:modules build:lockfile",
+    "build:package": "gulp all",
+    "build:archive": "mkdir -p lib/dist && cd src/ && tar --exclude '*__pycache__*' -cf ../lib/dist/basthon.tar basthon && cd -",
+    "build:modules": "BASTHON_MODULES='lib/dist/modules' ; for d in $(find src/modules/ -mindepth 1 -maxdepth 1 -type d); do cd $d ; make build ; cd - ; done && mkdir -p $BASTHON_MODULES/extern && cp $(find src/modules/ -type f -name '*.whl') $BASTHON_MODULES && cp $(find src/modules/ -path '*/extern/*' -type f) $BASTHON_MODULES/extern",
+    "build:lockfile": "python3 build-lockfile.py",
+    "clean": "run-s clean:lib clean:modules",
+    "clean:lib": "rm -rf lib/",
+    "clean:modules": "for d in $(find src/modules/ -mindepth 1 -maxdepth 1 -type d); do cd $d ; make clean ; cd - ; done",
+    "_postinstall": "PYODIDE_VERSION=$(python3 pyodide_version.py) && mkdir -p lib/dist/ && wget -qO- https://github.com/pyodide/pyodide/releases/download/$PYODIDE_VERSION/pyodide-build-$PYODIDE_VERSION.tar.bz2 | tar xjvf - -C lib/dist/",
+    "_prepublishOnly": "rm -rf lib/dist/pyodide/"
+  },
+  "dependencies": {
+    "@basthon/kernel-base": "*"
+  },
+  "devDependencies": {
+    "gulp": "^4.0.2",
+    "gulp-concat": "^2.6.1",
+    "gulp-cssmin": "^0.2.0",
+    "gulp-less": "^5.0.0",
+    "gulp-sourcemaps": "^3.0.0",
+    "gulp-typescript": "^6.0.0-alpha.1",
+    "gulp-uglify": "^3.0.2",
+    "npm-run-all": "^4.1.5",
+    "typescript": "~4.4.4"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}

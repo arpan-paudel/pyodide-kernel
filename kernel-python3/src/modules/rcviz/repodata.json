@@ -1,0 +1,11 @@
+{
+  "rcviz": {
+    "name": "rcviz",
+    "version": "0.0.1",
+    "file_name": "",
+    "install_dir": "site",
+    "sha256": "",
+    "imports": ["rcviz"],
+    "depends": ["graphviz"]
+  }
+}

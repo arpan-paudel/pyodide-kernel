@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel="stylesheet" href="{extern_tutor_url}/pytutor-main.min.css"/>
+    <script src="{extern_tutor_url}/pytutor-main.min.js"></script>
+    <script>
+      let sent_height;
+      $(document).ready(function() {{
+          // managing iframe resize
+          const send = () => {{
+              const new_height = document.body.offsetHeight;
+              if (sent_height === new_height) return;
+              sent_height = new_height;
+              window.parent.postMessage({{
+                  type: "pytutor-iframe-resize",
+                  target: "{iframe_id}",
+                  height: sent_height,
+              }}, '*');
+          }};
+          const o = new ResizeObserver(send);
+          o.observe(document.body);
+
+          const t = {json_trace};
+          function redraw() {{ if (window.v) window.v.redrawConnectors(); }}
+          window.v = new ExecutionVisualizer(
+              'main', t,
+              {{embeddedMode: false,
+                heightChangeCallback: redraw}}
+          );
+
+          // message of type 'redraw' from parent triggers a full redraw
+          // (usefull when iframe is added to a non visible parent)
+          window.addEventListener('message', function (event) {{
+              const data = event.data;
+              if( data.type === 'redraw' )
+                  window.v.updateOutput();
+          }});
+
+          $(window).resize(redraw);
+          redraw();
+      }});
+    </script>
+  </head>
+  <body style="background-color: white; overflow-y: hidden;">
+    <div id="main"></div>
+  </body>
+</html>
