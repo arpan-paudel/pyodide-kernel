@@ -61,6 +61,28 @@ class Interpreter(InteractiveShell):
             "evalue": str(evalue),
             "traceback": stb,
         }
+    def patch_input(self):
+        """ Patching Pyodide input function and set toplevel async calls. """
+        _default_input = builtins.input
+
+        def _patched_input(prompt=None):
+            if prompt is not None:
+                print(prompt, end='', flush=True)
+            res = js.prompt(prompt)
+            print(res)
+            return res
+
+        # copying all writable attributes (useful to keep docstring and name)
+        for a in dir(_default_input):
+            try:
+                setattr(_patched_input, a, getattr(_default_input, a))
+            except Exception:
+                pass
+
+        # replacing
+        builtins.input = _patched_input
+
+
 
 
 class LitePythonShellApp(BaseIPythonApplication, InteractiveShellApp):
