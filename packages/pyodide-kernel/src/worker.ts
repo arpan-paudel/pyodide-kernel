@@ -400,26 +400,11 @@ export class PyodideRemoteKernel {
    *
    * @param content The incoming message with the reply
    */
-  // async inputReply(content: any, parent: any) {
-  //   await this.setup(parent);
+  async inputReply(content: any, parent: any) {
+    await this.setup(parent);
 
-  //   this._resolveInputReply(content);
-  // }
-  async inputReply(prompt: string, parent: any) {
-    this.setup(parent);
-
-    // Use window.prompt to get input from the user
-    const userInput = window.prompt(prompt);
-
-    // Check if the user entered something
-    if (userInput !== null) {
-        // Resolve the input reply with the user's input
-        this._resolveInputReply({ value: userInput });
-    } else {
-        // User clicked "Cancel" or closed the prompt
-        this._resolveInputReply({ value: null });
-    }
-}
+    this._resolveInputReply(content);
+  }
 
   /**
    * Send a input request to the front-end.
