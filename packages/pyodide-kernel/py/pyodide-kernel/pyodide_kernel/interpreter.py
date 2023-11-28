@@ -1,6 +1,7 @@
 import builtins
 import getpass
 import sys
+import js 
 
 from IPython.core.application import BaseIPythonApplication
 from IPython.core.history import HistoryManager
@@ -34,9 +35,26 @@ class Interpreter(InteractiveShell):
 
     @input.setter
     def input(self, value):
-        self._input = value
+        #added
+        _default_input = builtins.input
+        def _patched_input(prompt=None):
+            if prompt is not None:
+                print(prompt, end='', flush=True)
+                res = js.prompt(prompt)
+                print(res)
+                return res
+
+    # copying all writable attributes (usefull to keep docstring and name)
+        for a in dir(_default_input):
+            try:
+                setattr(_patched_input, a, getattr(_default_input, a))
+            except Exception:
+                pass
+#above
+        # self._input = value
         # self._input is an unhashable JsProxy and can break things
-        builtins.input = lambda *args, **kwargs: value(*args, **kwargs)
+        # builtins.input = lambda *args, **kwargs: value(*args, **kwargs)
+        builtins.input = _patched_input
 
     @property
     def getpass(self):
